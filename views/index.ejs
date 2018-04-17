@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>GG trans</title>
+	<link rel="stylesheet" href="">
+
+</head>
+<body>
+	<h1>Trans GG</h1>
+	<textarea id="inputTxt" rows="10"></textarea>
+	<button id="transBtn">Trans</button>
+	<div id="audio"></div>
+	<div id="token"></div>
+	<div id="outputTxt"></div>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script>
+		$('#transBtn').click(()=>{
+			let query = getCleanURI($('#inputTxt').val())
+			$.get("/transapi/gettoken/"+query, function(data) {
+			  	$( "#token" ).html(data.value)
+			})
+			$.get("/transapi/gettext/en/vi/"+query, function(data) {
+			  	$( "#outputTxt" ).html(data.text+'<br/>'+'More: '+data.raw)
+			})
+			$.get("/transapi/srcspeech/en/"+query, function(data) {
+			  	$("#audio").html("<video name='mp4' controls><source src='"+data+"' type='video/mp4'>")
+			})
+		})
+		function getCleanURI(text){
+			return decodeURI(text.replace(/[^\w\s]/gi, ''))
+		}
+	</script>
+</body>
+</html>

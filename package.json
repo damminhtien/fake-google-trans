@@ -1,0 +1,32 @@
+{
+  "name": "ggtrans",
+  "version": "1.0.0",
+  "description": "fake gg trans",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/damminhtien/fake-google-trans.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "gg-trans"
+  ],
+  "author": "damminhtien",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/damminhtien/fake-google-trans/issues"
+  },
+  "homepage": "https://github.com/damminhtien/fake-google-trans#readme",
+  "dependencies": {
+    "ejs": "^2.5.8",
+    "express": "^4.16.3",
+    "google-translate-token": "^1.0.0",
+    "got": "^8.3.0",
+    "querystring": "^0.2.0",
+    "safe-eval": "^0.3.0"
+  }
+}
