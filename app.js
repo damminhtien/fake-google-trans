@@ -4,6 +4,8 @@ const token = require('google-translate-token')
 const got = require('got')
 const querystring = require('querystring')
 const safeEval = require('safe-eval')
+const request = require('request')
+const fs = require("fs")
 
 app.use(express.static("./public"));
 app.set("view engine", "ejs");
@@ -17,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/transapi/gettoken/:text", (req, res) => {
-    token.get(decodeURI(req.params.text.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, ''))).then((token) => {
+    token.get(encodeURI(req.params.text)).then((token) => {
         res.json(token)
     }).catch((err) => {
         let e;
@@ -32,7 +34,7 @@ app.get("/transapi/gettoken/:text", (req, res) => {
 });
 
 app.get("/transapi/gettext/:lang1/:lang2/:text", (req, res) => {
-	let query = getCleanURI(req.params.text)
+	let query = req.params.text
     token.get(query).then((token) => {
     	console.log(token)
         let url = 'https://translate.google.com/translate_a/single'
@@ -112,7 +114,7 @@ app.get("/transapi/gettext/:lang1/:lang2/:text", (req, res) => {
 });
 
 app.get("/transapi/speech/:lang/:text", (req, res) => {
-	let query = getCleanURI(req.params.text)
+	let query = encodeURI(req.params.text)
     token.get(query).then((token) => {
     	console.log(token)
         let url = 'https://translate.google.com/translate_tts'
@@ -125,7 +127,8 @@ app.get("/transapi/speech/:lang/:text", (req, res) => {
             textlen: query.length,
             tk: token.value,
             client: 't',
-            prev: 'input'
+            prev: 'input',
+            ttsspeed: '0.24'
         }
         res.statusCode = 302;
  	 	res.setHeader("Location", url + '?' + querystring.stringify(data))
@@ -144,7 +147,7 @@ app.get("/transapi/speech/:lang/:text", (req, res) => {
 });
 
 app.get("/transapi/srcspeech/:lang/:text", (req, res) => {
-    let query = getCleanURI(req.params.text)
+    let query = (req.params.text)
     token.get(query).then((token) => {
     	console.log(token)
         let url = 'https://translate.google.com/translate_tts'
@@ -159,7 +162,9 @@ app.get("/transapi/srcspeech/:lang/:text", (req, res) => {
             client: 't',
             prev: 'input'
         }
- 	 	res.send(url + '?' + querystring.stringify(data))
+        url = url + '?' + querystring.stringify(data);
+        request(url).pipe(fs.createWriteStream("jspro.mp3"));
+ 	 	res.send(url)
     })
     .catch(function(err) {
         let e;
@@ -172,7 +177,3 @@ app.get("/transapi/srcspeech/:lang/:text", (req, res) => {
         throw e
     })
 });
-
-function getCleanURI(text){
-	return decodeURI(text.replace(/-[&\/\\#,+()$~%.'":*?<>{}]/g, '%20'))
-}

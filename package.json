@@ -27,6 +27,7 @@
     "google-translate-token": "^1.0.0",
     "got": "^8.3.0",
     "querystring": "^0.2.0",
+    "request": "^2.85.0",
     "safe-eval": "^0.3.0"
   }
 }
